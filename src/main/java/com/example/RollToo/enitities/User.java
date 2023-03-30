@@ -1,6 +1,8 @@
 package com.example.RollToo.enitities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table (name = "users")
@@ -9,13 +11,13 @@ public class User {
     //below: variables for the data to be stored in the users table
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "userId")
+    @Column (name = "user_id")
     private int id;
 
     @Column ( nullable = false, unique = true, length = 45)
     private String email;
 
-    @Column (nullable = false, length = 45)
+    @Column (nullable = false)
     private String password;
 
     @Column ( nullable = false, unique = true, length = 45)
@@ -23,6 +25,15 @@ public class User {
 
 
     private boolean enabled;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+            )
+
+    private Set<Role> roles = new HashSet<>();
 
 
     //Getters and Setters
@@ -66,6 +77,13 @@ public class User {
         this.enabled = enabled;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     //ToString Method to print out data
     @Override
